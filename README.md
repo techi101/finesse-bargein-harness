@@ -1,3 +1,13 @@
+<p align="center"><a href="https://finesse-bargein-harness.vercel.app"><img src="docs/hero-1440.png" alt="Barge-in Harness demo: README playback pattern keeps talking 1,841 ms after the user interrupts at 4x synthesis speed, the Interruptible wrapper goes quiet in 0 ms" width="900"></a></p>
+
+**Problem:** following the Finesse SDK README, `cancel()` does not stop audio that already arrived, so a voice agent keeps talking after the user interrupts it.
+
+**Result:** after `cancel()`, the README playback pattern kept talking for **1,086 ms at 2x, 1,841 ms at 4x and 5,288 ms at 8x** synthesis speed. The `Interruptible` wrapper went quiet in **0 ms** at every speed (`results/results.json`, against a local mock, not Flam's service).
+
+**[Try it live: finesse-bargein-harness.vercel.app](https://finesse-bargein-harness.vercel.app)** (the demo site is in `demo/`; `python demo/build_data.py` copies `results/results.json` into it)
+
+---
+
 # flam-proof: barge-in and time-to-first-audio checks for Finesse realtime
 
 A small offline harness that drives Flam's public Python SDK (`flam-finesse` 0.1.1) against a
