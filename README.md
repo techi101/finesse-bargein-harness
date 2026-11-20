@@ -1,4 +1,4 @@
-<p align="center"><a href="https://finesse-bargein-harness.vercel.app"><img src="docs/hero-1440.png" alt="Barge-in Harness demo: README playback pattern keeps talking 1,841 ms after the user interrupts at 4x synthesis speed, the Interruptible wrapper goes quiet in 0 ms" width="900"></a></p>
+<p align="center"><a href="https://finesse-bargein-harness.vercel.app"><img src="docs/hero-1440.png" alt="Barge-in Harness demo: a replayed interruption where the README playback pattern keeps talking 5,288 ms after the user cuts in at 8x synthesis speed, while the Interruptible wrapper goes quiet in 0 ms" width="900"></a></p>
 
 **Problem:** following the Finesse SDK README, `cancel()` does not stop audio that already arrived, so a voice agent keeps talking after the user interrupts it.
 

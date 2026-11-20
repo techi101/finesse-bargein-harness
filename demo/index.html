@@ -5,21 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Barge-in Harness</title>
 <meta name="description" content="When a user interrupts a Finesse voice agent, how long does it keep talking? README playback pattern vs an Interruptible wrapper, measured with the real flam-finesse SDK against a local mock.">
+<meta name="theme-color" content="#17110F">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234F46E5'/%3E%3Cg fill='white'%3E%3Crect x='7' y='12' width='3' height='8' rx='1.5'/%3E%3Crect x='12' y='8' width='3' height='16' rx='1.5'/%3E%3Crect x='17' y='11' width='3' height='10' rx='1.5'/%3E%3Crect x='22' y='14' width='3' height='4' rx='1.5'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%2317110F'/%3E%3Cg fill='%23F2ECE4'%3E%3Crect x='7' y='12' width='3' height='8' rx='1.5'/%3E%3Crect x='12' y='8' width='3' height='16' rx='1.5'/%3E%3C/g%3E%3Crect x='17' y='15' width='9' height='2' rx='1' fill='%2386E0C9'/%3E%3C/svg%3E">
 </head>
 <body>
 <header class="nav">
   <div class="wrap nav-in">
-    <a class="brand" href="#top" aria-label="Barge-in Harness home">
-      <span class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-      <span>Barge-in Harness</span>
-    </a>
-    <span class="chip hide-sm">flam-finesse 0.1.1</span>
-    <a class="gh" href="https://github.com/techi101/finesse-bargein-harness" target="_blank" rel="noopener">
+    <a class="brand" href="#top">Barge-in Harness</a>
+    <span class="nav-meta hide-sm">for flam-finesse 0.1.1</span>
+    <a class="nav-gh" href="https://github.com/techi101/finesse-bargein-harness" target="_blank" rel="noopener">
       <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
       <span>View on GitHub</span>
     </a>
@@ -27,138 +27,126 @@
 </header>
 
 <main id="top">
-  <section class="hero wrap">
-    <p class="eyebrow">Turn taking test for Flam's Finesse realtime voice SDK</p>
-    <h1>When the user cuts in, the agent should go quiet.</h1>
-    <div class="what">
-      <p><span class="tag tag-red">Problem</span> Following the SDK README, <code>cancel()</code> does not stop audio that already arrived, so the voice keeps talking over the user.</p>
-      <p><span class="tag tag-brand">Result</span> The README pattern kept talking for up to <b id="h-max">…</b> after the interrupt. A small wrapper brought it to <b id="h-fix">…</b> at every speed tested.</p>
-    </div>
-  </section>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="atmos" aria-hidden="true"></div>
+    <div class="wrap hero-in">
+      <div class="hero-top">
+      <h1 id="hero-title">When you cut in, a voice agent should stop talking.</h1>
+      <p class="lede" id="lede">Following the Finesse SDK README, the agent kept talking for up to <b id="h-max">…</b> after the user interrupted. A small wrapper made it go quiet in <b id="h-fix">…</b> at every speed tested.</p>
+      </div>
 
-  <section class="wrap" aria-labelledby="sim-title">
-    <div class="panel">
-      <div class="panel-head">
-        <div>
-          <h2 id="sim-title">Replay one interrupted turn</h2>
-          <p class="sub">A 3 sentence reply. The user starts talking 1.0 s in. Pick how much faster than realtime the server synthesizes audio.</p>
-        </div>
-        <div class="controls">
-          <div class="seg" role="radiogroup" aria-label="Synthesis speed">
-            <button role="radio" data-speed="2">2x</button>
-            <button role="radio" data-speed="4">4x</button>
-            <button role="radio" data-speed="8">8x</button>
+      <div class="stage" id="stage">
+        <div class="stage-bar">
+          <p class="stage-title">One interrupted reply, replayed in real time</p>
+          <div class="controls">
+            <div class="seg" role="radiogroup" aria-label="Synthesis speed, how much faster than realtime the server makes audio">
+              <button type="button" role="radio" data-speed="2">2x</button>
+              <button type="button" role="radio" data-speed="4">4x</button>
+              <button type="button" role="radio" data-speed="8">8x</button>
+            </div>
+            <button class="replay" id="replay" type="button">
+              <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M4 2.5v11l9.5-5.5z"/></svg>
+              Replay
+            </button>
           </div>
-          <button class="btn" id="replay" type="button">
-            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4 2.5v11l9.5-5.5z"/></svg>
-            Replay
-          </button>
         </div>
-      </div>
 
-      <div class="timeline" id="timeline">
-        <div class="lane lane-user">
-          <div class="lane-label"><span class="dot dot-user"></span>User</div>
-          <div class="track" id="track-user"></div>
+        <div class="lanes" id="lanes">
+          <div class="cutline" id="cutline" aria-hidden="true"><span>You start talking</span></div>
+          <div class="lane">
+            <p class="lane-name">You</p>
+            <canvas class="wave" data-kind="user" aria-hidden="true"></canvas>
+            <p class="lane-val lane-val-quiet" id="clock">0.0 s elapsed</p>
+          </div>
+          <div class="lane">
+            <p class="lane-name">README pattern<span>calls <code>ctx.cancel()</code></span></p>
+            <canvas class="wave" data-kind="sdk" aria-hidden="true"></canvas>
+            <p class="lane-val"><b class="ember" id="c-sdk">0 ms</b><span>talking after you cut in</span></p>
+          </div>
+          <div class="lane">
+            <p class="lane-name">Interruptible wrapper<span>calls <code>turn.interrupt()</code></span></p>
+            <canvas class="wave" data-kind="fix" aria-hidden="true"></canvas>
+            <p class="lane-val"><b class="tide" id="c-fix">0 ms</b><span>talking after you cut in</span></p>
+          </div>
+          <div class="axis" id="axis" aria-hidden="true"></div>
         </div>
-        <div class="lane">
-          <div class="lane-label"><span class="dot dot-red"></span>README pattern<small>async for pcm in ctx.audio()</small></div>
-          <div class="track" id="track-sdk"></div>
-          <div class="lane-stat"><span class="num red" id="c-sdk">0 ms</span><span class="lbl">talking after interrupt</span></div>
-        </div>
-        <div class="lane">
-          <div class="lane-label"><span class="dot dot-brand"></span>Interruptible wrapper<small>turn.interrupt()</small></div>
-          <div class="track" id="track-fix"></div>
-          <div class="lane-stat"><span class="num brand" id="c-fix">0 ms</span><span class="lbl">talking after interrupt</span></div>
-        </div>
-        <div class="axis" id="axis" aria-hidden="true"></div>
-        <div class="legend">
-          <span><i class="sw sw-brand"></i>Agent speech before the interrupt</span>
-          <span><i class="sw sw-red"></i>Agent still talking after <code>cancel()</code></span>
-          <span><i class="sw sw-line"></i>User interrupts at 1.0 s</span>
-        </div>
-        <p class="note" id="note"></p>
+
+        <p class="note" id="note" aria-live="polite"></p>
+        <p class="caveat">Measured with the real <code>flam-finesse</code> 0.1.1 SDK against a local mock, not Flam's service.</p>
       </div>
     </div>
   </section>
 
-  <section class="wrap" aria-labelledby="cmp-title">
-    <h2 id="cmp-title" class="h2">Before and after, at every speed</h2>
-    <p class="sub">Silence latency: time from <code>cancel()</code> returning to the last audio chunk finishing playback. Lower is better.</p>
-    <div class="compare">
-      <div class="col">
-        <div class="col-head"><span class="dot dot-red"></span>README pattern</div>
-        <div id="rows-sdk"></div>
-      </div>
-      <div class="col">
-        <div class="col-head"><span class="dot dot-brand"></span>Interruptible wrapper</div>
-        <div id="rows-fix"></div>
-      </div>
+  <section class="wrap block" aria-labelledby="cmp-title">
+    <div class="block-head">
+      <h2 id="cmp-title">Before and after, at every speed</h2>
+      <p>How long the voice kept going after <code>cancel()</code> returned. The faster the server makes audio, the more of the reply is already waiting to play when you cut in.</p>
     </div>
+    <div class="compare" id="compare"></div>
     <p class="fine" id="onex"></p>
   </section>
 
-  <section class="wrap" aria-labelledby="fix-title">
-    <div class="split">
-      <div>
-        <h2 id="fix-title" class="h2">The fix is a thin wrapper</h2>
-        <p class="sub">It uses only the public SDK API. It keeps its own interrupted flag, skips any audio already queued, and still reads the turn to its normal end.</p>
-        <ul class="checks">
-          <li>Covers audio already sitting in the context queue</li>
-          <li>Covers the case where the server already sent <code>task_done</code> and <code>cancel()</code> does nothing</li>
-          <li>10 tests in the repo reproduce both gaps and the fix</li>
-        </ul>
-      </div>
-      <pre class="code" aria-label="Wrapper usage"><code><span class="c"># before: async for event in ctx</span>
-turn = <span class="k">Interruptible</span>(ctx)
+  <section class="wrap block split" aria-labelledby="fix-title">
+    <div class="block-head">
+      <h2 id="fix-title">The fix is a thin wrapper</h2>
+      <p>It uses only the public SDK. It keeps its own interrupted flag, drops audio that is already queued, and still reads the turn to its normal end.</p>
+      <ul class="checks">
+        <li>Covers audio already sitting in the context queue.</li>
+        <li>Covers the case where the server already sent <code>task_done</code>, so <code>cancel()</code> does nothing.</li>
+        <li>10 tests in the repo reproduce both gaps and the fix.</li>
+      </ul>
+    </div>
+    <pre class="code" aria-label="Wrapper usage"><code><span class="c"># before: async for event in ctx</span>
+turn = <span class="t">Interruptible</span>(ctx)
 <span class="k">async for</span> event <span class="k">in</span> turn:
-    <span class="k">if</span> isinstance(event, AudioEvent):
+    <span class="k">if</span> isinstance(event, <span class="t">AudioEvent</span>):
         speaker.write(event.pcm)
 
-<span class="c"># on barge in, before: await ctx.cancel()</span>
+<span class="c"># on barge-in, before: await ctx.cancel()</span>
 <span class="k">await</span> turn.interrupt()</code></pre>
-    </div>
   </section>
 
-  <section class="wrap" aria-labelledby="ttfa-title">
-    <h2 id="ttfa-title" class="h2">Second check: time to first audio</h2>
-    <p class="sub">The LLM pauses 1.0 s in the middle of its first sentence. Flam's Visual Agents page puts the whole pipeline under 800 ms.</p>
+  <section class="wrap block" aria-labelledby="ttfa-title">
+    <div class="block-head">
+      <h2 id="ttfa-title">Second check: time to first audio</h2>
+      <p>The LLM pauses for 1.0 s in the middle of its first sentence. Flam's Visual Agents page puts the whole pipeline under 800 ms.</p>
+    </div>
     <div class="ttfa" id="ttfa"></div>
     <p class="fine">These numbers mostly echo the mock's own settings (150 ms per sentence) plus the idle flush timer. They show why the timer matters, not how fast Finesse is.</p>
   </section>
 
-  <section class="wrap" aria-labelledby="how-title">
-    <div class="how">
-      <h2 id="how-title" class="h2">How it was measured</h2>
-      <p class="sub">The real, unmodified <code>flam-finesse</code> 0.1.1 Python SDK, run against a local mock of the Finesse realtime WebSocket. No API key, no network.</p>
-      <details>
-        <summary><span class="more">Show more</span><span class="less">Show less</span></summary>
-        <div class="how-body">
-          <dl>
-            <dt>Server</dt><dd>A local mock (<code>finesse_mock.py</code>) written from the SDK's message parser and README. It is not Flam's service, so no number here is a measurement of Finesse.</dd>
-            <dt>Player</dt><dd>Plays in real time by sleeping for each chunk's duration, the same back pressure a blocking <code>speaker.write</code> creates.</dd>
-            <dt>Barge in</dt><dd>After 1.0 s of played audio the user "starts talking" and the player calls <code>ctx.cancel()</code> (README pattern) or <code>turn.interrupt()</code> (wrapper).</dd>
-            <dt>Stale speech</dt><dd>Seconds of this turn's audio the player still received and played after the cancel call returned.</dd>
-            <dt>Silence latency</dt><dd>Wall time from the cancel call returning to the last audio chunk finishing playback.</dd>
-            <dt>Why speed matters</dt><dd>The faster synthesis runs ahead of playback, the more audio is already buffered in the context's queue when the user cuts in. At 8x the server had already sent <code>task_done</code>, so <code>cancel()</code> returned early and the whole rest of the turn played.</dd>
-            <dt>Run</dt><dd id="env"></dd>
-          </dl>
-          <p class="limits-title">Honest limits</p>
-          <ul class="limits">
-            <li>Real Finesse timing, sentence splitting and idle flush may differ from the mock.</li>
-            <li>Whether the gap shows in production depends on how far real synthesis runs ahead of playback, which was not measured without an API key.</li>
-            <li>Only the Python SDK was checked. The Node SDK and the LiveKit and Pipecat plugins were not tested.</li>
-            <li>Local loopback has no network delay. Playback is a sleep, not a speaker or a lip sync renderer.</li>
-          </ul>
-        </div>
-      </details>
-    </div>
+  <section class="wrap block" aria-labelledby="how-title">
+    <details class="how">
+      <summary>
+        <h2 id="how-title">How it was measured</h2>
+        <span class="how-sub">The real, unmodified <code>flam-finesse</code> 0.1.1 Python SDK, run against a local mock of the Finesse realtime WebSocket. No API key, no network.</span>
+        <span class="how-toggle"><span class="more">Show details</span><span class="less">Hide details</span></span>
+      </summary>
+      <div class="how-body">
+        <dl>
+          <dt>Server</dt><dd>A local mock (<code>finesse_mock.py</code>) written from the SDK's message parser and README. It is not Flam's service, so no number here is a measurement of Finesse.</dd>
+          <dt>Player</dt><dd>Plays in real time by sleeping for each chunk's duration, the same back pressure a blocking <code>speaker.write</code> creates.</dd>
+          <dt>Barge-in</dt><dd>After 1.0 s of played audio the user starts talking and the player calls <code>ctx.cancel()</code> (README pattern) or <code>turn.interrupt()</code> (wrapper).</dd>
+          <dt>Stale speech</dt><dd>Seconds of this turn's audio the player still received and played after the cancel call returned.</dd>
+          <dt>Silence latency</dt><dd>Wall time from the cancel call returning to the last audio chunk finishing playback.</dd>
+          <dt>Why speed matters</dt><dd>The faster synthesis runs ahead of playback, the more audio is already buffered in the context's queue when the user cuts in. At 8x the server had already sent <code>task_done</code>, so <code>cancel()</code> returned early and the whole rest of the turn played.</dd>
+          <dt>Run</dt><dd id="env"></dd>
+        </dl>
+        <h3>Honest limits</h3>
+        <ul class="limits">
+          <li>Real Finesse timing, sentence splitting and idle flush may differ from the mock.</li>
+          <li>Whether the gap shows in production depends on how far real synthesis runs ahead of playback, which was not measured without an API key.</li>
+          <li>Only the Python SDK was checked. The Node SDK and the LiveKit and Pipecat plugins were not tested.</li>
+          <li>Local loopback has no network delay. Playback is a sleep, not a speaker or a lip sync renderer.</li>
+        </ul>
+      </div>
+    </details>
   </section>
 </main>
 
 <footer class="foot">
   <div class="wrap foot-in">
-    <span>Independent test harness. Not affiliated with Flam.</span>
+    <p>Independent test harness. Not affiliated with Flam.</p>
     <a href="https://github.com/techi101/finesse-bargein-harness" target="_blank" rel="noopener">github.com/techi101/finesse-bargein-harness</a>
   </div>
 </footer>
